@@ -62,7 +62,7 @@ footer{height:50px;display:flex;align-items:center;justify-content:center;gap:14
   const bookEl=document.getElementById('book');
   const counter=document.getElementById('counter');
   try{
-    if(!pdfjsLib || !window.St) throw new Error('Не удалось загрузить библиотеки. Проверьте подключение к интернету.');
+   if(!pdfjsLib || !window.St) throw new Error('Не удалось загрузить библиотеки. Проверьте подключение к интернету.');
     pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
     // PDF.js can request byte ranges, so the entire PDF need not be rendered up front.
