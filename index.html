@@ -104,7 +104,7 @@ footer{height:50px;display:flex;align-items:center;justify-content:center;gap:14
     const rendering=new Map();
 
 async function renderPage(index){
-  if(index<0  index>=total  rendered.has(index)) return;
+  if(index<0  index>=total || rendered.has(index)) return;
   if(rendering.has(index)) return rendering.get(index);
 
   const job=(async()=>{
