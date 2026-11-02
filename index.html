@@ -19,7 +19,7 @@ button:hover{background:#444}
 button:disabled{opacity:.35;cursor:default}
 main{height:calc(100dvh - 112px);min-height:300px;display:flex;align-items:center;justify-content:center;padding:12px;overflow:hidden}
 #book-wrap{width:min(96vw,1200px);height:100%;display:flex;align-items:center;justify-content:center}
-#book{margin:auto;}
+#book{margin:auto}
 .page{background:#fff;overflow:hidden;position:relative}
 .page canvas{display:block;width:100%;height:100%;object-fit:fill}
 .page .loading{position:absolute;inset:0;background:#fff}
@@ -72,12 +72,11 @@ footer{height:50px;display:flex;align-items:center;justify-content:center;gap:14
     const first=await pdf.getPage(1);
     const base=first.getViewport({scale:1});
     const wrap=document.getElementById('book-wrap');
-   const isMobile=window.matchMedia('(max-width:650px)').matches;
-const isMobile=window.matchMedia('(max-width:650px)').matches;
-const availableW=isMobile ? wrap.clientWidth-12 : Math.min(wrap.clientWidth-40, 1100);
-const availableH=Math.max(300,wrap.clientHeight-50);
-const fitScale=Math.min( availableW/(isMobile?base.width:base.width*2), availableH/base.height );
-const pageW=Math.round(base.widthfitScale); const pageH=Math.round(base.heightfitScale);
+    const availableW=Math.max(260,Math.min(560,(wrap.clientWidth-24)/2));
+    const availableH=Math.max(360,wrap.clientHeight-12);
+    const fitScale=Math.min(availableW/base.width,availableH/base.height);
+    const pageW=Math.round(base.width*fitScale);
+    const pageH=Math.round(base.height*fitScale);
 
     // Create light page shells immediately; rasterize only pages near the current spread.
     const pageEls=[];
@@ -93,106 +92,53 @@ const pageW=Math.round(base.widthfitScale); const pageH=Math.round(base.heightfi
       pageEls.push(div);
     }
 
-  const pageFlip=new St.PageFlip(bookEl,{
-  width:pageW,
-  height:pageH,
-  size:'fixed',
-  minWidth:220,
-  maxWidth:1200,
-  minHeight:300,
-  maxHeight:1200,
-  maxShadowOpacity:.32,
-  showCover:true,
-  mobileScrollSupport:false,
-  usePortrait:true,
-  drawShadow:true,
-  flippingTime:650,
-  autoSize:false
-});
+    const pageFlip=new St.PageFlip(bookEl,{
+      width:pageW,height:pageH,size:'stretch',
+      minWidth:220,maxWidth:560,minHeight:300,maxHeight:820,
+      maxShadowOpacity:.32,showCover:true,mobileScrollSupport:false,
+      usePortrait:true,drawShadow:true,flippingTime:650,autoSize:true
+    });
     pageFlip.loadFromHTML(pageEls);
     let activeIndex=0;
     const rendered=new Set();
     const rendering=new Map();
 
-async function renderPage(index){
-  if(index<0  index>=total  rendered.has(index)) return;
-  if(rendering.has(index)) return rendering.get(index);
-
-  const job=(async()=>{
-    const page=index===0?first:await pdf.getPage(index+1);
-
-    const isMobile=window.matchMedia('(max-width:650px)').matches;
-    const dpr=window.devicePixelRatio||1;
-
-    // Высокое качество на телефоне и компьютере
-    const outputScale=isMobile
-      ? Math.min(2.5,Math.max(2,dpr))
-      : Math.min(2.5,Math.max(1.5,dpr*1.2));
-
-    const viewport=page.getViewport({
-      scale:fitScale*outputScale
-    });
-
-    const canvas=document.createElement('canvas');
-    canvas.width=Math.ceil(viewport.width);
-    canvas.height=Math.ceil(viewport.height);
-    canvas.style.width='100%';
-    canvas.style.height='100%';
-
-    const ctx=canvas.getContext('2d',{alpha:false});
-
-    await page.render({
-      canvasContext:ctx,
-      viewport
-    }).promise;
-
-    pageEls[index].replaceChildren(canvas);
-    rendered.add(index);
-    page.cleanup();
-
-  })().finally(()=>rendering.delete(index));
-
-  rendering.set(index,job);
-  return job;
-}
-
-   async function warmNearby(index){
-
-  const isMobile = window.matchMedia('(max-width:650px)').matches;
-
-  // Сначала отображаем страницу, которую сейчас должен видеть читатель
-  const visiblePages = isMobile ? 1 : 2;
-
-  const firstVisible = [];
-  for(let i=index; i<Math.min(total,index+visiblePages); i++){
-    firstVisible.push(i);
-  }
-
-  await Promise.all(firstVisible.map(renderPage));
-
-  // Показываем журнал, не дожидаясь остальных страниц
-  message.textContent='Журнал готов';
-  bar.style.width='100%';
-  status.classList.add('hidden');
-
-  // Остальные страницы подгружаются постепенно
-  const preloadCount = isMobile ? 3 : 4;
-  const targets = [];
-
-  for(let i=Math.max(0,index-1);
-      i<Math.min(total,index+visiblePages+preloadCount);
-      i++){
-    if(!rendered.has(i)){
-      targets.push(i);
+    async function renderPage(index){
+      if(index<0 || index>=total || rendered.has(index)) return;
+      if(rendering.has(index)) return rendering.get(index);
+      const job=(async()=>{
+        const page=index===0?first:await pdf.getPage(index+1);
+        const outputScale=Math.min(2.5,Math.max(1.5,(window.devicePixelRatio||1)*1.35));
+        const viewport=page.getViewport({scale:fitScale*outputScale});
+        const canvas=document.createElement('canvas');
+        canvas.width=Math.ceil(viewport.width);
+        canvas.height=Math.ceil(viewport.height);
+        canvas.style.width='100%';
+        canvas.style.height='100%';
+        const ctx=canvas.getContext('2d',{alpha:false});
+        await page.render({canvasContext:ctx,viewport}).promise;
+        const host=pageEls[index];
+        host.replaceChildren(canvas);
+        rendered.add(index);
+        page.cleanup();
+        return true;
+      })().finally(()=>rendering.delete(index));
+      rendering.set(index,job);
+      return job;
     }
-  }
 
-  for(let i=0;i<targets.length;i+=2){
-    await Promise.all(
-      targets.slice(i,i+2).map(renderPage)
-    );
-  }
-}
+    async function warmNearby(index){
+      const spread=pageFlip.getOrientation()==='portrait'?1:2;
+      const targets=new Set();
+      for(let i=Math.max(0,index-1);i<=Math.min(total-1,index+spread+2);i++) targets.add(i);
+      const list=[...targets].filter(i=>!rendered.has(i));
+      for(let i=0;i<list.length;i+=2){
+        await Promise.all(list.slice(i,i+2).map(renderPage));
+      }
+      message.textContent='Журнал готов';
+      bar.style.width='100%';
+      setTimeout(()=>status.classList.add('hidden'),180);
+    }
 
     pageFlip.on('flip',e=>{
       activeIndex=e.data;
