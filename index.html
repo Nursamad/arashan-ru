@@ -1,500 +1,212 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>АРАШАН — Электронный журнал</title>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.min.js"></script>
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#171717">
+<title>АРАШАН — электронный журнал</title>
 <style>
-* {
-  box-sizing: border-box;
-}
-
-html, body {
-  margin: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
-body {
-  background: #171717;
-  color: #f5f5f5;
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-header {
-  height: 62px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 22px;
-  border-bottom: 1px solid #343434;
-  background: #202020;
-}
-
-.brand {
-  font-weight: 700;
-  letter-spacing: 3px;
-  font-size: 18px;
-}
-
-.sub {
-  font-size: 12px;
-  color: #aaa;
-  letter-spacing: .5px;
-  margin-top: 3px;
-}
-
-.actions {
-  display: flex;
-  gap: 9px;
-  align-items: center;
-}
-
-button {
-  border: 1px solid #555;
-  background: #303030;
-  color: #fff;
-  border-radius: 7px;
-  padding: 9px 13px;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-button:hover {
-  background: #444;
-}
-
-button:disabled {
-  opacity: .35;
-  cursor: default;
-}
-
-main {
-  height: calc(100dvh - 112px);
-  min-height: 300px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 12px;
-  overflow: hidden;
-}
-
-#book-wrap {
-  width: min(96vw, 1200px);
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-#book {
-  margin: auto;
-}
-
-.page {
-  background: #fff;
-  overflow: hidden;
-  position: relative;
-}
-
-.page canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: fill;
-}
-
-.page .loading {
-  position: absolute;
-  inset: 0;
-  background: #fff;
-}
-
-footer {
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  color: #ccc;
-  font-size: 13px;
-}
-
-#counter {
-  min-width: 100px;
-  text-align: center;
-  font-variant-numeric: tabular-nums;
-}
-
-#status {
-  position: fixed;
-  inset: 62px 0 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #171717;
-  color: #ddd;
-  z-index: 5;
-  text-align: center;
-  padding: 24px;
-}
-
-#status.hidden {
-  display: none;
-}
-
-#progress {
-  width: min(260px, 65vw);
-  height: 4px;
-  background: #444;
-  border-radius: 5px;
-  margin: 14px auto 0;
-  overflow: hidden;
-}
-
-#bar {
-  height: 100%;
-  width: 0;
-  background: #d2b36c;
-  transition: width .2s;
-}
-
-#hint {
-  font-size: 12px;
-  color: #aaa;
-  margin-top: 10px;
-  overflow-wrap: anywhere;
-}
-
-@media(max-width: 650px) {
-  header {
-    height: 54px;
-    padding: 0 12px;
-  }
-
-  .brand {
-    font-size: 16px;
-  }
-
-  .sub {
-    font-size: 10px;
-  }
-
-  header .actions button {
-    padding: 8px 9px;
-    font-size: 12px;
-  }
-
-  main {
-    height: calc(100dvh - 100px);
-    padding: 8px 2px 0;
-  }
-
-  footer {
-    height: 46px;
-    gap: 8px;
-    font-size: 12px;
-  }
-
-  #status {
-    inset: 54px 0 46px;
-  }
+:root{color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden}
+body{background:#171717;color:#f5f5f5;font-family:Arial,Helvetica,sans-serif}
+header{height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;border-bottom:1px solid #343434;background:#202020}
+.brand{font-weight:700;letter-spacing:3px;font-size:18px}
+.sub{font-size:12px;color:#aaa;letter-spacing:.5px;margin-top:3px}
+.actions{display:flex;gap:9px;align-items:center}
+button{border:1px solid #555;background:#303030;color:#fff;border-radius:7px;padding:9px 13px;font-size:14px;cursor:pointer}
+button:hover{background:#444}
+button:disabled{opacity:.35;cursor:default}
+main{height:calc(100dvh - 112px);min-height:300px;display:flex;align-items:center;justify-content:center;padding:12px;overflow:hidden}
+#book-wrap{width:min(96vw,1200px);height:100%;display:flex;align-items:center;justify-content:center}
+#book{margin:auto}
+.page{background:#fff;overflow:hidden;position:relative}
+.page canvas{display:block;width:100%;height:100%;object-fit:fill}
+.page .loading{position:absolute;inset:0;background:#fff}
+footer{height:50px;display:flex;align-items:center;justify-content:center;gap:14px;color:#ccc;font-size:13px}
+#counter{min-width:100px;text-align:center;font-variant-numeric:tabular-nums}
+#status{position:fixed;inset:62px 0 50px;display:flex;align-items:center;justify-content:center;background:#171717;color:#ddd;z-index:5;text-align:center;padding:24px}
+#status.hidden{display:none}
+#progress{width:min(260px,65vw);height:4px;background:#444;border-radius:5px;margin:14px auto 0;overflow:hidden}
+#bar{height:100%;width:0;background:#d2b36c;transition:width .2s}
+#hint{font-size:12px;color:#aaa;margin-top:10px}
+@media(max-width:650px){
+ header{height:54px;padding:0 12px}.brand{font-size:16px}.sub{font-size:10px}
+ header .actions button{padding:8px 9px;font-size:12px}
+ main{height:calc(100dvh - 100px);padding:8px 2px 0}
+ footer{height:46px;gap:8px;font-size:12px}
+ #status{inset:54px 0 46px}
 }
 </style>
 </head>
-
 <body>
-
 <header>
-  <div>
-    <div class="brand">АРАШАН</div>
-    <div class="sub">ЭЛЕКТРОННЫЙ ЖУРНАЛ</div>
-  </div>
-
+  <div><div class="brand">ARASHAN</div><div class="sub">ЭЛЕКТРОННЫЙ ЖУРНАЛ</div></div>
   <div class="actions">
-    <button id="full">⛶</button>
+    <button id="prev" aria-label="Предыдущая страница">←</button>
+    <button id="next" aria-label="Следующая страница">→</button>
+    <button id="full" title="Полный экран">⛶</button>
   </div>
 </header>
-
-<main>
-  <div id="book-wrap">
-    <div id="book"></div>
-  </div>
-</main>
-
-<footer>
-  <button id="prev">←</button>
-  <div id="counter">Загрузка...</div>
-  <button id="next">→</button>
-</footer>
-
-<div id="status">
-  <div>
-    <div id="message">Открываем журнал…</div>
-    <div id="progress">
-      <div id="bar"></div>
-    </div>
-    <div id="hint">Пожалуйста, подождите</div>
-  </div>
-</div>
-
+<div id="status"><div><div id="message">Открываем журнал…</div><div id="progress"><div id="bar"></div></div><div id="hint">Страницы будут загружаться по мере перелистывания</div></div></div>
+<main><div id="book-wrap"><div id="book"></div></div></main>
+<footer><span>Страница</span><span id="counter">— / —</span><span style="color:#888">•</span><span>Листайте стрелками или свайпом</span></footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.min.js"></script>
 <script>
-(async function () {
+(async()=>{
+  const pdfjsLib=window['pdfjs-dist/build/pdf'];
+  const status=document.getElementById('status');
+  const message=document.getElementById('message');
+  const bar=document.getElementById('bar');
+  const bookEl=document.getElementById('book');
+  const counter=document.getElementById('counter');
+  try{
+    if(!pdfjsLib || !window.St) throw new Error('Не удалось загрузить библиотеки. Проверьте подключение к интернету.');
+    pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-  const message = document.getElementById('message');
-  const hint = document.getElementById('hint');
-  const bar = document.getElementById('bar');
-  const status = document.getElementById('status');
-  const counter = document.getElementById('counter');
-  const bookEl = document.getElementById('book');
-  const wrap = document.getElementById('book-wrap');
+    // PDF.js can request byte ranges, so the entire PDF need not be rendered up front.
+    const loadingTask=pdfjsLib.getDocument({url:'arashan.pdf', rangeChunkSize:65536, disableAutoFetch:true, disableStream:true});
+    const pdf=await loadingTask.promise;
+    const total=pdf.numPages;
+    const first=await pdf.getPage(1);
+    const base=first.getViewport({scale:1});
+    const wrap=document.getElementById('book-wrap');
+    const availableW=Math.max(260,Math.min(560,(wrap.clientWidth-24)/2));
+    const availableH=Math.max(360,wrap.clientHeight-12);
+    const fitScale=Math.min(availableW/base.width,availableH/base.height);
+    const pageW=Math.round(base.width*fitScale);
+    const pageH=Math.round(base.height*fitScale);
 
-  try {
-
-    if (!window.pdfjsLib  !window.St  !window.St.PageFlip) {
-throw new Error('Не удалось загрузить библиотеки. Проверьте интернет.');
+    // Create light page shells immediately; rasterize only pages near the current spread.
+    const pageEls=[];
+    for(let i=0;i<total;i++){
+      const div=document.createElement('div');
+      div.className='page';
+      div.style.width=pageW+'px';
+      div.style.height=pageH+'px';
+      const placeholder=document.createElement('div');
+      placeholder.className='loading';
+      div.appendChild(placeholder);
+      bookEl.appendChild(div);
+      pageEls.push(div);
     }
 
-    pdfjsLib.GlobalWorkerOptions.workerSrc =
-      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-
-    message.textContent = 'Загружаем PDF…';
-
-    const loadingTask = pdfjsLib.getDocument({
-      url: 'arashan.pdf',
-      rangeChunkSize: 65536,
-      disableAutoFetch: true,
-      disableStream: true
+    const pageFlip=new St.PageFlip(bookEl,{
+      width:pageW,height:pageH,size:'stretch',
+      minWidth:220,maxWidth:560,minHeight:300,maxHeight:820,
+      maxShadowOpacity:.32,showCover:true,mobileScrollSupport:false,
+      usePortrait:true,drawShadow:true,flippingTime:650,autoSize:true
     });
-
-    const pdf = await loadingTask.promise;
-    const total = pdf.numPages;
-
-    message.textContent = 'Подготавливаем страницы…';
-
-    const first = await pdf.getPage(1);
-    const base = first.getViewport({ scale: 1 });
-
-    const isMobile = window.matchMedia('(max-width:650px)').matches;
-
-    const availableW = isMobile
-      ? wrap.clientWidth - 8
-      : (wrap.clientWidth - 32) / 2;
-
-    const availableH = wrap.clientHeight - 20;
-
-    const fitScale = Math.min(
-      availableW / base.width,
-      availableH / base.height
-    );
-
-    const pageW = Math.round(base.width * fitScale);
-    const pageH = Math.round(base.height * fitScale);
-
-    const pageEls = [];
-    const rendered = new Set();
-    const rendering = new Map();
-
-    for (let i = 0; i < total; i++) {
-      const page = document.createElement('div');
-      page.className = 'page';
-
-      const loading = document.createElement('div');
-      loading.className = 'loading';
-
-      page.appendChild(loading);
-      bookEl.appendChild(page);
-      pageEls.push(page);
-    }
-
-    async function renderPage(index) {
-
-      if (index < 0  index >= total  rendered.has(index)) {
-        return;
-      }
-
-      if (rendering.has(index)) {
-        return rendering.get(index);
-      }
-
-      const job = (async () => {
-
-        const page = index === 0
-          ? first
-          : await pdf.getPage(index + 1);
-
-        const outputScale = Math.min(
-          2.5,
-          Math.max(1.5, (window.devicePixelRatio || 1) * 1.35)
-        );
-
-        const viewport = page.getViewport({
-          scale: fitScale * outputScale
-        });
-
-        const canvas = document.createElement('canvas');
-
-        canvas.width = Math.ceil(viewport.width);
-        canvas.height = Math.ceil(viewport.height);
-
-        canvas.style.width = '100%';
-        canvas.style.height = '100%';
-
-        const ctx = canvas.getContext('2d', {
-          alpha: false
-        });
-
-        await page.render({
-          canvasContext: ctx,
-          viewport: viewport
-        }).promise;
-
-        const host = pageEls[index];
-
-        host.replaceChildren(canvas);
-        rendered.add(index);
-
-        page.cleanup();
-
-        return true;
-
-      })().finally(() => {
-        rendering.delete(index);
-      });
-
-      rendering.set(index, job);
-
-      return job;
-    }
-
-    message.textContent = 'Рисуем первую страницу…';
-
-    await renderPage(0);
-
-    const pageFlip = new St.PageFlip(bookEl, {
-      width: pageW,
-      height: pageH,
-      size: 'fixed',
-      minWidth: 220,
-      maxWidth: pageW,
-      minHeight: 300,
-      maxHeight: pageH,
-      maxShadowOpacity: 0.32,
-      showCover: true,
-      mobileScrollSupport: false,
-      usePortrait: true,
-      drawShadow: true,
-      flippingTime: 650,
-      autoSize: false
-    });
-
     pageFlip.loadFromHTML(pageEls);
+    let activeIndex=0;
+    const rendered=new Set();
+    const rendering=new Map();
 
-    let activeIndex = 0;
+async function renderPage(index){
+  if(index<0  index>=total  rendered.has(index)) return;
+  if(rendering.has(index)) return rendering.get(index);
 
-    async function warmNearby(index) {
+  const job=(async()=>{
+    const page=index===0?first:await pdf.getPage(index+1);
 
-      const spread = pageFlip.getOrientation() === 'portrait' ? 1 : 2;
+    const isMobile=window.matchMedia('(max-width:650px)').matches;
+    const dpr=window.devicePixelRatio||1;
 
-      const targets = new Set();
+    // Высокое качество на телефоне и компьютере
+    const outputScale=isMobile
+      ? Math.min(2.5,Math.max(2,dpr))
+      : Math.min(2.5,Math.max(1.5,dpr*1.2));
 
-      for (
-        let i = Math.max(0, index - 1);
-        i <= Math.min(total - 1, index + spread + 2);
-        i++
-      ) {
-        targets.add(i);
-      }
-
-      const list = [...targets].filter(i => !rendered.has(i));
-
-      for (let i = 0; i < list.length; i += 2) {
-
-        await Promise.all(
-          list.slice(i, i + 2).map(renderPage)
-        );
-
-        const percent = Math.round(
-          rendered.size / total * 100
-        );
-
-        bar.style.width = percent + '%';
-      }
-
-      message.textContent = 'Журнал готов';
-      bar.style.width = '100%';
-
-      setTimeout(() => {
-        status.classList.add('hidden');
-      }, 300);
-    }
-
-    pageFlip.on('flip', e => {
-
-      activeIndex = e.data;
-
-      counter.textContent =
-        (activeIndex + 1) + ' / ' + total;
-
-      warmNearby(activeIndex).catch(console.error);
-
+    const viewport=page.getViewport({
+      scale:fitScale*outputScale
     });
 
-    document.getElementById('prev').onclick = () => {
-      pageFlip.flipPrev();
-    };
+    const canvas=document.createElement('canvas');
+    canvas.width=Math.ceil(viewport.width);
+    canvas.height=Math.ceil(viewport.height);
+    canvas.style.width='100%';
+    canvas.style.height='100%';
 
-    document.getElementById('next').onclick = () => {
-      pageFlip.flipNext();
-    };
+    const ctx=canvas.getContext('2d',{alpha:false});
 
-    document.getElementById('full').onclick = () => {
+    await page.render({
+      canvasContext:ctx,
+      viewport
+    }).promise;
 
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen?.();
-      } else {
-        document.exitFullscreen?.();
-      }
+    pageEls[index].replaceChildren(canvas);
+    rendered.add(index);
+    page.cleanup();
 
-    };
+  })().finally(()=>rendering.delete(index));
 
-    document.addEventListener('keydown', e => {
+  rendering.set(index,job);
+  return job;
+}
 
-      if (e.key === 'ArrowLeft') {
-        pageFlip.flipPrev();
-      }
+async function warmNearby(index){
 
-      if (e.key === 'ArrowRight') {
-        pageFlip.flipNext();
-      }
+  const isMobile = window.matchMedia('(max-width:650px)').matches;
 
-    });
+  // Сначала отображаем страницу, которую сейчас должен видеть читатель
+  const visiblePages = isMobile ? 1 : 2;
 
-    counter.textContent = '1 / ' + total;
-
-    message.textContent = 'Загружаем ближайшие страницы…';
-
-    await warmNearby(0);
-
-  } catch (err) {
-
-    console.error(err);
-
-    message.textContent = 'Не удалось загрузить журнал';
-
-    hint.textContent = err.message || 'Неизвестная ошибка';
-
-    bar.style.display = 'none';
-
+  const firstVisible = [];
+  for(let i=index; i<Math.min(total,index+visiblePages); i++){
+    firstVisible.push(i);
   }
 
+  await Promise.all(firstVisible.map(renderPage));
+
+  // Показываем журнал, не дожидаясь остальных страниц
+  message.textContent='Журнал готов';
+  bar.style.width='100%';
+  status.classList.add('hidden');
+
+  // Остальные страницы подгружаются постепенно
+  const preloadCount = isMobile ? 3 : 4;
+  const targets = [];
+
+  for(let i=Math.max(0,index-1);
+      i<Math.min(total,index+visiblePages+preloadCount);
+      i++){
+    if(!rendered.has(i)){
+      targets.push(i);
+    }
+  }
+
+  for(let i=0;i<targets.length;i+=2){
+    await Promise.all(
+      targets.slice(i,i+2).map(renderPage));
+  }
+}
+
+    pageFlip.on('flip',e=>{
+      activeIndex=e.data;
+      counter.textContent=(activeIndex+1)+' / '+total;
+      warmNearby(activeIndex).catch(console.error);
+    });
+    document.getElementById('prev').onclick=()=>pageFlip.flipPrev();
+    document.getElementById('next').onclick=()=>pageFlip.flipNext();
+    document.getElementById('full').onclick=()=>{
+      if(!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+      else document.exitFullscreen?.();
+    };
+    document.addEventListener('keydown',e=>{
+      if(e.key==='ArrowLeft') pageFlip.flipPrev();
+      if(e.key==='ArrowRight') pageFlip.flipNext();
+    });
+    counter.textContent='1 / '+total;
+    message.textContent='Готовим первые страницы…';
+    await warmNearby(0);
+  }catch(err){
+    console.error(err);
+    message.textContent='Не удалось загрузить журнал. Проверьте, что arashan.pdf находится рядом с index.html и интернет доступен.';
+    document.getElementById('hint').textContent=err.message||'Ошибка загрузки';
+    bar.style.display='none';
+  }
 })();
 </script>
-
 </body>
 </html>
