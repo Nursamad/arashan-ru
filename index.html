@@ -67,12 +67,16 @@ footer{height:50px;display:flex;align-items:center;justify-content:center;gap:14
 
     // PDF.js can request byte ranges, so the entire PDF need not be rendered up front.
     const loadingTask=pdfjsLib.getDocument({url:'arashan.pdf', rangeChunkSize:65536, disableAutoFetch:true, disableStream:true});
-    const pdf=await loadingTask.promise; const total=pdf.numPages; const first=await pdf.getPage(1); const base=first.getViewport({scale:1}); const wrap=document.getElementById('book-wrap');
-const isMobile=window.matchMedia('(max-width:650px)').matches;
-const availableW=isMobile ? wrap.clientWidth-8 : Math.min(560,(wrap.clientWidth-50)/2);
-const availableH=isMobile ? wrap.clientHeight-12 : wrap.clientHeight-70;
-const fitScale=Math.min( availableW/base.width, availableH/base.height );
-const pageW=Math.round(base.widthfitScale); const pageH=Math.round(base.heightfitScale);
+    const pdf=await loadingTask.promise;
+    const total=pdf.numPages;
+    const first=await pdf.getPage(1);
+    const base=first.getViewport({scale:1});
+    const wrap=document.getElementById('book-wrap');
+    const availableW=Math.max(260,Math.min(560,(wrap.clientWidth-24)/2));
+    const availableH=Math.max(360,wrap.clientHeight-12);
+    const fitScale=Math.min(availableW/base.width,availableH/base.height);
+    const pageW=Math.round(base.width*fitScale);
+    const pageH=Math.round(base.height*fitScale);
 
     // Create light page shells immediately; rasterize only pages near the current spread.
     const pageEls=[];
